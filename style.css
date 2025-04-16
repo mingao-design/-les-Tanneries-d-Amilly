@@ -72,3 +72,6 @@ button:hover {
 .message-card:hover {
   transform: scale(1.03);
 }
+body {
+  background-color: pink;
+}
