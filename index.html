@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Livre d’or des Tanneries d’Amilly</h1>
+  <h1>Livre d’Or des Tanneries d’Amilly</h1>
   <div class="board">
     <form id="message-form">
       <input type="text" id="prenom" placeholder="Votre prénom" required>
@@ -16,24 +16,45 @@
     </form>
     <div id="messages" class="message-cards"></div>
   </div>
+
   <script src="falling_sakura.js"></script>
   <script>
     const form = document.getElementById('message-form');
     const messagesContainer = document.getElementById('messages');
 
+    // 加载本地留言
+    window.onload = function() {
+      const stored = localStorage.getItem('messages');
+      if (stored) {
+        const messages = JSON.parse(stored);
+        messages.forEach(msg => addCard(msg.prenom, msg.message));
+      }
+    };
+
+    // 提交表单
     form.addEventListener('submit', function(event) {
       event.preventDefault();
       const prenom = document.getElementById('prenom').value.trim();
       const message = document.getElementById('message').value.trim();
-
       if (prenom && message) {
-        const card = document.createElement('div');
-        card.className = 'message-card';
-        card.innerHTML = `<strong>${prenom}</strong><p>${message}</p>`;
-        messagesContainer.appendChild(card);
+        addCard(prenom, message);
+        saveToLocalStorage(prenom, message);
         form.reset();
       }
     });
+
+    function addCard(prenom, message) {
+      const card = document.createElement('div');
+      card.className = 'message-card';
+      card.innerHTML = `<strong>${prenom}</strong><p>${message}</p>`;
+      messagesContainer.appendChild(card);
+    }
+
+    function saveToLocalStorage(prenom, message) {
+      let messages = JSON.parse(localStorage.getItem('messages')) || [];
+      messages.push({ prenom, message });
+      localStorage.setItem('messages', JSON.stringify(messages));
+    }
   </script>
 </body>
 </html>
