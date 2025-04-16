@@ -17,7 +17,7 @@
         .sakura {
             position: fixed;
             top: -20px;
-            background: url('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.png') no-repeat center center; /* 使用粉色樱花图片 */
+            background: url('https://gd-hbimg.huaban.com/9612824ec20194c2e757fc0a228b9a0d9995b327165322-2kiYJg_fw1200webp') no-repeat center center; /* 替换为提供的图片链接 */
             background-size: cover;
             border-radius: 50%;
             opacity: 0.8;
@@ -77,11 +77,10 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             cursor: pointer;
             position: relative;
-            transition: transform 0.3s ease; /* 添加过渡效果 */
         }
 
         .card:hover {
-            transform: scale(1.1); /* 鼠标悬停时放大 */
+            transform: scale(1.1);
         }
 
         .card-content {
@@ -137,6 +136,7 @@
             top: 30%;
             left: 40%;
         }
+
     </style>
 </head>
 <body>
@@ -148,18 +148,6 @@
         </div>
 
         <div class="cards">
-            <div class="card" onclick="openCardModal(this)">
-                <div class="card-content">
-                    <h4>Prénom</h4>
-                    <input type="submit" value="Laisser un message">
-                </div>
-            </div>
-            <div class="card" onclick="openCardModal(this)">
-                <div class="card-content">
-                    <h4>Prénom</h4>
-                    <input type="submit" value="Laisser un message">
-                </div>
-            </div>
             <div class="card" onclick="openCardModal(this)">
                 <div class="card-content">
                     <h4>Prénom</h4>
