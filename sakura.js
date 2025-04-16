@@ -1,2 +1,3 @@
-git rm path/to/your-file
+git rm sakura.js
+git rm sakura.png
 
