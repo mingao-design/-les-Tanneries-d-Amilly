@@ -1,34 +1,228 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Les Tanneries d’Amilly – Livre d’or</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Tanneries d'Amilly - Le Livre d'Or</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+
+        /* 樱花飘落效果 */
+        .sakura {
+            position: fixed;
+            top: -20px;
+            background: url('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.png') no-repeat center center; /* 使用粉色樱花图片 */
+            background-size: cover;
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: fall 10s linear infinite;
+            animation-delay: -5s;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 树的样式 */
+        .tree {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            background-color: #8B4513; /* 树干颜色 */
+            margin: 50px auto;
+            border-radius: 20px;
+        }
+
+        .branches {
+            position: absolute;
+            top: 50px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .branch {
+            width: 10px;
+            height: 100px;
+            background-color: #8B4513;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 100px;
+        }
+
+        .card {
+            width: 120px;
+            height: 160px;
+            background-color: #FFD700;
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease; /* 添加过渡效果 */
+        }
+
+        .card:hover {
+            transform: scale(1.1); /* 鼠标悬停时放大 */
+        }
+
+        .card-content {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .card-content input, .card-content textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        .card-content input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 弹出留言框 */
+        .card-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .card-modal input[type="text"], .card-modal textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+        }
+
+        /* 树上挂卡片 */
+        .card-position {
+            position: absolute;
+            top: 30%;
+            left: 40%;
+        }
+    </style>
 </head>
 <body>
-  <h1>Les Tanneries d’Amilly</h1>
-  <h2>Livre d’or</h2>
+    <div class="tree">
+        <div class="branches">
+            <div class="branch"></div>
+            <div class="branch"></div>
+            <div class="branch"></div>
+        </div>
 
-  <form id="guestbook-form">
-    <label for="name">Nom :</label>
-    <input type="text" id="name" required>
+        <div class="cards">
+            <div class="card" onclick="openCardModal(this)">
+                <div class="card-content">
+                    <h4>Prénom</h4>
+                    <input type="submit" value="Laisser un message">
+                </div>
+            </div>
+            <div class="card" onclick="openCardModal(this)">
+                <div class="card-content">
+                    <h4>Prénom</h4>
+                    <input type="submit" value="Laisser un message">
+                </div>
+            </div>
+            <div class="card" onclick="openCardModal(this)">
+                <div class="card-content">
+                    <h4>Prénom</h4>
+                    <input type="submit" value="Laisser un message">
+                </div>
+            </div>
+            <div class="card" onclick="openCardModal(this)">
+                <div class="card-content">
+                    <h4>Prénom</h4>
+                    <input type="submit" value="Laisser un message">
+                </div>
+            </div>
+        </div>
 
-    <label for="message">Message :</label>
-    <textarea id="message" required></textarea>
+        <div class="card-modal" id="cardModal">
+            <span class="close-btn" onclick="closeModal()">X</span>
+            <div class="card-content">
+                <h3>Prénom</h3>
+                <textarea placeholder="Laissez votre message..."></textarea>
+                <input type="text" placeholder="Votre prénom">
+                <input type="submit" value="Envoyer">
+            </div>
+        </div>
+    </div>
 
-    <button type="submit">Envoyer</button>
-  </form>
+    <script>
+        // 樱花花瓣效果
+        class Sakura {
+            constructor(selector) {
+                this.selector = document.querySelector(selector);
+                this.interval = null;
+                this.createPetal = this.createPetal.bind(this);
+                this.start();
+            }
 
-  <section id="messages">
-    <h3>Messages précédents</h3>
-    <ul id="message-list"></ul>
-  </section>
+            createPetal() {
+                const petal = document.createElement('div');
+                petal.classList.add('sakura');
+                const size = Math.random() * 10 + 15;
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size}px`;
+                petal.style.left = `${Math.random() * window.innerWidth}px`;
+                this.selector.appendChild(petal);
+                setTimeout(() => petal.remove(), 10000);
+            }
 
-  <script src="sakura.js"></script>
-  <script>
-    new Sakura('body');
-  </script>
-  <script src="script.js"></script>
+            start() {
+                this.interval = setInterval(this.createPetal, 300);
+            }
+        }
+
+        new Sakura('body');
+
+        // 弹出留言框
+        function openCardModal(card) {
+            const modal = document.getElementById('cardModal');
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('cardModal');
+            modal.style.display = 'none';
+        }
+    </script>
 </body>
 </html>
