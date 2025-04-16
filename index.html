@@ -3,32 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Les Tanneries d’Amilly – Livre d’or</title>
+  <title>Les Tanneries d’Amilly - Livre d’Or</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Les Tanneries d’Amilly</h1>
-  <h2>Livre d’or</h2>
-
-  <form id="guestbook-form">
-    <label for="name">Prénom :</label>
-    <input type="text" id="name" required>
-
-    <label for="message">Message :</label>
-    <textarea id="message" required></textarea>
-
-    <button type="submit">Envoyer</button>
-  </form>
-
-  <section id="messages">
-    <h3>Messages précédents</h3>
-    <ul id="message-list"></ul>
-  </section>
-
+  <h1>Livre d’Or des Tanneries d’Amilly</h1>
+  <div class="board">
+    <form id="message-form">
+      <input type="text" id="prenom" placeholder="Votre prénom" required>
+      <textarea id="message" placeholder="Votre message" required></textarea>
+      <button type="submit">Envoyer</button>
+    </form>
+    <div id="messages" class="message-cards"></div>
+  </div>
   <script src="falling_sakura.js"></script>
   <script>
-    new Sakura('body');
+    const form = document.getElementById('message-form');
+    const messagesContainer = document.getElementById('messages');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const prenom = document.getElementById('prenom').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (prenom && message) {
+        const card = document.createElement('div');
+        card.className = 'message-card';
+        card.innerHTML = `<strong>${prenom}</strong><p>${message}</p>`;
+        messagesContainer.appendChild(card);
+        form.reset();
+      }
+    });
   </script>
-  <script src="script.js"></script>
 </body>
 </html>
