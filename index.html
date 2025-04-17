@@ -24,6 +24,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
+    // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyC7W5tJsaljaNmQ9QnlKZ22tCqnOGM2Ss0",
       authDomain: "livredor-10fb8.firebaseapp.com",
@@ -34,13 +35,14 @@
       measurementId: "G-CJ7ZWYN9Y4"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     const form = document.getElementById('message-form');
     const messagesContainer = document.getElementById('messages');
 
-    // 监听留言并自动加载
+    // Load messages from Firestore
     const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
     onSnapshot(q, (snapshot) => {
       messagesContainer.innerHTML = "";
@@ -53,7 +55,7 @@
       });
     });
 
-    // 提交表单并保存到 Firestore
+    // Submit form and save message to Firestore
     form.addEventListener('submit', async function(event) {
       event.preventDefault();
       const prenom = document.getElementById('prenom').value.trim();
@@ -66,7 +68,7 @@
             message,
             timestamp: new Date()
           });
-          form.reset(); // 清空表单
+          form.reset();
         } catch (e) {
           alert("Erreur d’enregistrement du message : " + e.message);
         }
