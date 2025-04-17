@@ -1,84 +1,58 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Les Tanneries d’Amilly - Livre d’or</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>Livre d’or des Tanneries d’Amilly</h1>
-  <div class="board">
-    <form id="message-form">
-      <input type="text" id="prenom" placeholder="Votre prénom" required>
-      <textarea id="message" placeholder="Votre message" required></textarea>
-      <button type="submit">Envoyer</button>
-    </form>
-    <div id="messages" class="message-cards"></div>
-  </div>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+  
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyC7W5tJsaljaNmQ9QnlKZ22tCqnOGM2Ss0",
+    authDomain: "livredor-10fb8.firebaseapp.com",
+    projectId: "livredor-10fb8",
+    storageBucket: "livredor-10fb8.firebasestorage.app",
+    messagingSenderId: "835842642476",
+    appId: "1:835842642476:web:f63a4ef791f7e1029b7789",
+    measurementId: "G-CJ7ZWYN9Y4"
+  };
 
-  <script src="falling_sakura.js"></script>
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+  const form = document.getElementById('message-form');
+  const messagesContainer = document.getElementById('messages');
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyC7W5tJsaljaNmQ9QnlKZ22tCqnOGM2Ss0",
-      authDomain: "livredor-10fb8.firebaseapp.com",
-      projectId: "livredor-10fb8",
-      storageBucket: "livredor-10fb8.firebasestorage.app",
-      messagingSenderId: "835842642476",
-      appId: "1:835842642476:web:f63a4ef791f7e1029b7789",
-      measurementId: "G-CJ7ZWYN9Y4"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const form = document.getElementById('message-form');
-    const messagesContainer = document.getElementById('messages');
-
-    // 监听留言并自动加载
-    const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
-    onSnapshot(q, (snapshot) => {
-      messagesContainer.innerHTML = "";
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const card = document.createElement('div');
-        card.className = 'message-card';
-        card.innerHTML = `<strong>${data.prenom}</strong><p>${data.message}</p>`;
-        messagesContainer.appendChild(card);
-      });
+  // Firestore Query: Listen to messages in real time
+  const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
+  onSnapshot(q, (snapshot) => {
+    messagesContainer.innerHTML = "";
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const card = document.createElement('div');
+      card.className = 'message-card';
+      card.innerHTML = `<strong>${data.prenom}</strong><p>${data.message}</p>`;
+      messagesContainer.appendChild(card);
     });
+  });
 
-    // 提交表单并保存到 Firestore
-    form.addEventListener('submit', async function(event) {
-      event.preventDefault();
-      const prenom = document.getElementById('prenom').value.trim();
-      const message = document.getElementById('message').value.trim();
+  // Form submission: Save new messages to Firestore
+  form.addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const prenom = document.getElementById('prenom').value.trim();
+    const message = document.getElementById('message').value.trim();
 
-      // 调试信息：打印出提交的表单数据
-      console.log("Form data:", prenom, message);
-
-      if (prenom && message) {
-        try {
-          // 添加留言到 Firestore
-          await addDoc(collection(db, "messages"), {
-            prenom,
-            message,
-            timestamp: new Date()
-          });
-          console.log("Message successfully added!");  // 提交成功
-          form.reset(); // 清空表单
-        } catch (e) {
-          console.error("Error adding message: ", e);  // 错误信息
-        }
-      } else {
-        console.log("Form data is empty.");  // 数据为空时输出提示
+    if (prenom && message) {
+      try {
+        await addDoc(collection(db, "messages"), {
+          prenom,
+          message,
+          timestamp: new Date()
+        });
+        form.reset(); // Clear the form after submission
+      } catch (e) {
+        alert("Erreur d’enregistrement du message : " + e.message);
       }
-    });
-  </script>
-</body>
-</html>
+    }
+  });
+</script>
