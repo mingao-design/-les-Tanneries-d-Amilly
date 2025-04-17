@@ -34,7 +34,6 @@
       measurementId: "G-CJ7ZWYN9Y4"
     };
 
-    // 初始化 Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -60,20 +59,24 @@
       const prenom = document.getElementById('prenom').value.trim();
       const message = document.getElementById('message').value.trim();
 
+      // 调试信息：打印出提交的表单数据
+      console.log("Form data:", prenom, message);
+
       if (prenom && message) {
         try {
+          // 添加留言到 Firestore
           await addDoc(collection(db, "messages"), {
             prenom,
             message,
             timestamp: new Date()
           });
+          console.log("Message successfully added!");  // 提交成功
           form.reset(); // 清空表单
         } catch (e) {
-          console.error("Erreur d’enregistrement du message : ", e);
-          alert("Erreur d’enregistrement du message : " + e.message);
+          console.error("Error adding message: ", e);  // 错误信息
         }
       } else {
-        console.log("Form data is empty.");
+        console.log("Form data is empty.");  // 数据为空时输出提示
       }
     });
   </script>
