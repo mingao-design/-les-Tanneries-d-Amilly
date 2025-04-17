@@ -21,9 +21,12 @@
 
   <!-- Firebase SDK -->
   <script type="module">
+    // 导入 Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
+    // Firebase 配置代码
     const firebaseConfig = {
       apiKey: "AIzaSyC7W5tJsaljaNmQ9QnlKZ22tCqnOGM2Ss0",
       authDomain: "livredor-10fb8.firebaseapp.com",
@@ -34,7 +37,10 @@
       measurementId: "G-CJ7ZWYN9Y4"
     };
 
+    // 初始化 Firebase
     const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app); // 如果你打算使用 Google Analytics
+
     const db = getFirestore(app);
 
     const form = document.getElementById('message-form');
