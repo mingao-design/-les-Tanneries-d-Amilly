@@ -1,79 +1,173 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Les Tanneries d’Amilly - Livre d’or</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>Livre d’or des Tanneries d’Amilly</h1>
-  <div class="board">
-    <form id="message-form">
-      <input type="text" id="prenom" placeholder="Votre prénom" required>
-      <textarea id="message" placeholder="Votre message" required></textarea>
-      <button type="submit">Envoyer</button>
-    </form>
-    <div id="messages" class="message-cards"></div>
-  </div>
-
-  <script src="falling_sakura.js"></script>
-
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyC7W5tJsaljaNmQ9QnlKZ22tCqnOGM2Ss0",
-      authDomain: "livredor-10fb8.firebaseapp.com",
-      projectId: "livredor-10fb8",
-      storageBucket: "livredor-10fb8.firebasestorage.app",
-      messagingSenderId: "835842642476",
-      appId: "1:835842642476:web:f63a4ef791f7e1029b7789",
-      measurementId: "G-CJ7ZWYN9Y4"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const form = document.getElementById('message-form');
-    const messagesContainer = document.getElementById('messages');
-
-    // Load messages from Firestore
-    const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
-    onSnapshot(q, (snapshot) => {
-      messagesContainer.innerHTML = "";
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const card = document.createElement('div');
-        card.className = 'message-card';
-        card.innerHTML = `<strong>${data.prenom}</strong><p>${data.message}</p>`;
-        messagesContainer.appendChild(card);
-      });
-    });
-
-    // Submit form and save message to Firestore
-    form.addEventListener('submit', async function(event) {
-      event.preventDefault();
-      const prenom = document.getElementById('prenom').value.trim();
-      const message = document.getElementById('message').value.trim();
-
-      if (prenom && message) {
-        try {
-          await addDoc(collection(db, "messages"), {
-            prenom,
-            message,
-            timestamp: new Date()
-          });
-          form.reset();
-        } catch (e) {
-          alert("Erreur d’enregistrement du message : " + e.message);
-        }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Livre d’or des Tanneries d’Amilly</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background-color: #048C4C;
+        overflow-x: hidden;
       }
-    });
-  </script>
-</body>
+
+      h1 {
+        text-align: center;
+        color: white;
+        margin-top: 40px;
+        line-height: 1.4;
+      }
+
+      .form-container {
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+        position: relative;
+      }
+
+      label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+      }
+
+      input[type="text"], textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      button {
+        background-color: #61B774;
+        color: white;
+        padding: 10px 20px;
+        margin-top: 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .message {
+        background-color: #79C08C;
+        color: white;
+        padding: 10px;
+        margin: 10px auto;
+        border-radius: 8px;
+        max-width: 500px;
+      }
+
+      .bubble {
+        position: absolute;
+        background-color: rgba(147, 205, 132, 0.4);
+        border-radius: 50% / 40%;
+        width: 150px;
+        height: 80px;
+        animation: floatZ 15s infinite ease-in-out;
+      }
+
+      .bubble:nth-child(1) {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+      .bubble:nth-child(2) {
+        top: 50%;
+        left: 70%;
+        animation-delay: 5s;
+      }
+      .bubble:nth-child(3) {
+        top: 80%;
+        left: 30%;
+        animation-delay: 10s;
+      }
+
+      @keyframes floatZ {
+        0% { transform: translateX(0) translateY(0); }
+        25% { transform: translateX(40px) translateY(-30px); }
+        50% { transform: translateX(0) translateY(-60px); }
+        75% { transform: translateX(-40px) translateY(-30px); }
+        100% { transform: translateX(0) translateY(0); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+    <div class="bubble"></div>
+
+    <h1>Livre d’or<br>des Tanneries d’Amilly</h1>
+
+    <div class="form-container">
+      <form id="message-form">
+        <label for="prenom">Prénom</label>
+        <input type="text" id="prenom" name="prenom" required />
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+
+    <div id="messages"></div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+      import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyC7W5tJsaljaNmQ9QnlKZ22tCqnOGM2Ss0",
+        authDomain: "livredor-10fb8.firebaseapp.com",
+        projectId: "livredor-10fb8",
+        storageBucket: "livredor-10fb8.appspot.com",
+        messagingSenderId: "835842642476",
+        appId: "1:835842642476:web:f63a4ef791f7e1029b7789",
+        measurementId: "G-CJ7ZWYN9Y4"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      const form = document.getElementById("message-form");
+      const messagesDiv = document.getElementById("messages");
+
+      async function displayMessages() {
+        messagesDiv.innerHTML = "";
+        const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const msg = document.createElement("div");
+          const date = data.timestamp?.toDate().toLocaleString('fr-FR') || "";
+          msg.className = "message";
+          msg.innerText = `${data.prenom} : ${data.message}\n(${date})`;
+          messagesDiv.appendChild(msg);
+        });
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const prenom = form.prenom.value;
+        const message = form.message.value;
+
+        await addDoc(collection(db, "messages"), {
+          prenom,
+          message,
+          timestamp: serverTimestamp(),
+        });
+
+        form.reset();
+        displayMessages();
+      });
+
+      displayMessages();
+    </script>
+  </body>
 </html>
