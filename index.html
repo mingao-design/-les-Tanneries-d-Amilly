@@ -58,6 +58,11 @@
         transform: translateX(0) translateY(-80px);
       }
     }
+
+    .message-cards {
+      max-height: 300px;
+      overflow-y: auto;
+    }
   </style>
 </head>
 <body>
@@ -111,6 +116,8 @@ des Tanneries d’Amilly</h1>
         card.innerHTML = `<strong>${data.prenom}</strong><p>${data.message}</p><small>${date.toLocaleString()}</small>`;
         messagesContainer.appendChild(card);
       });
+      // 自动滚动到底部
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 
     form.addEventListener('submit', async function(event) {
